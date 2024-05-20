@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Page</title>
+    <!-- Include Web3.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+    <!-- Include your contract ABI here -->
+    <script src="/js/contractABI.js"></script>
+    <link rel="stylesheet" href="/css/checkout.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="home.html"><img class="farmease-logo" src="/images/farmease_logo.jpg" alt="Farm-Ease"></a>
+        </div>
+        <nav class="nav-bar">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="t&c.html">T & C</a>
+            <a href="signup_options.html">Sign Up</a> <!-- Updated login link -->
+        </nav>
+    </header>
+    <main>
+        <div class="checkout-container">
+            <h2>Checkout</h2>
+            <div class="step1">
+                <h3>Delivery Address</h3>
+                <form id="address-form">
+                    <input type="text" name="fullname" placeholder="Full Name" required><br>
+                    <input type="text" name="address" placeholder="Address" required><br>
+                    <input type="text" name="city" placeholder="City" required><br>
+                    <input type="text" name="zipcode" placeholder="Zip Code" required><br>
+                    <input type="text" name="country" placeholder="Country" required><br>
+                </form>
+                <button id="next-step1">Next</button>
+            </div>
+            <div class="step2" style="display: none;">
+                <h3>Payment Method</h3>
+                <form id="payment-form">
+                    <!-- Only MetaMask payment method -->
+                    <input type="radio" id="metamask" name="payment-method" value="metamask" checked>
+                    <label for="metamask">MetaMask</label><br>
+                </form>
+                <button id="next-step2">Complete Payment</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <!-- Footer content -->
+    </footer>
+    <script>
+        // Initialize Web3
+        async function initWeb3() {
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                try {
+                    // Request account access if needed
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                } catch (error) {
+                    console.error('User denied account access:', error);
+                }
+            } else {
+                console.warn('MetaMask not detected!');
+            }
+        }
+
+        // Initialize the contract instance
+        async function initContract() {
+            const contractAddress = '0x5B38Da6a701c568545dCfcB03FcB875f56beddC4'; // Your contract address here
+            window.farmToTableContract = new web3.eth.Contract(contractABI, contractAddress);
+        }
+
+        // Function to handle "Next" button click for step 1
+        async function handleNextStep1() {
+            // Hide step 1 form
+            document.querySelector('.step1').style.display = 'none';
+            // Show step 2 form
+            document.querySelector('.step2').style.display = 'block';
+        }
+
+        // Function to handle "Next" button click for step 2
+        async function handleNextStep2() {
+            try {
+                // Process payment here (smart contract integration)
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const selectedAccount = accounts[0];
+
+                // Example: Call smart contract method to deliver (adjust based on your contract)
+                await farmToTableContract.methods.deliver().send({ from: selectedAccount });
+
+                // Show success message
+                alert('Payment successful! Your order has been placed.');
+
+                // Redirect user to home page
+                window.location.href = 'home.html';
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                // Show error message
+                alert('Insufficient Funds.');
+            }
+        }
+
+        // Function to initialize the checkout page and attach event listeners
+        async function initCheckout() {
+            // Initialize Web3
+            await initWeb3();
+
+            // Initialize the contract instance
+            await initContract();
+
+            // Attach event listeners to "Next" buttons
+            document.getElementById('next-step1').addEventListener('click', handleNextStep1);
+            document.getElementById('next-step2').addEventListener('click', handleNextStep2);
+        }
+
+        // Call the function to initialize the checkout page
+        initCheckout();
+    </script>
+</body>
+</html>

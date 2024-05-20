@@ -1,0 +1,23 @@
+/* Style other elements, buttons, etc. as needed */
+.checkout-container {
+    display: flex;
+    justify-content: space-around;
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+.order-summary, .delivery-details, .payment-section {
+    border: 1px solid #e2e2e2;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px; 
+}
+
+.price-item {
+  margin: 4px 0;
+}
+
+.price-footer {
+  font-weight: bold;
+  border-top: 1px solid #e2e2e2;
+} 

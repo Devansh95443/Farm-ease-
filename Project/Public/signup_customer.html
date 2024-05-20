@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Signup</title>
+    <link rel="stylesheet" href="/css/signup.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="home.html"><img class="farmease-logo" src="/images/farmease_logo.jpg" alt="Farm-Ease Home"></a>
+            <h1>Farm-Ease</h1>
+        </div>
+        <nav class="nav-bar">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="t&c.html">T & C</a>
+        </nav>        
+    </header>
+    <div class="container">
+        <h2 class="heading">Customer Signup</h2>
+        <!-- Customer-specific input fields -->
+        <form id="signup-form" action="/api/v1/signup" method="post">
+            <div class="form-group">
+                <label for="full-name">Full Name:</label>
+                <input type="text" id="full-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <!-- Common input fields for both producer and customer -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <!-- Submit button -->
+            <button type="submit" class="button customer-button">Signup as Customer</button>
+        </form>
+        <p>Already registerd <span><b><a href="signin.html"><u>Signin</u></a></b></span></p>
+    </div>
+    
+    <footer>
+        <div class="copyright">
+            © 2024 www.Farm-ease.com. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        document.getElementById("signup-form").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            // Get form data
+            const formData = new FormData(this);
+    
+            // Send form data to backend
+            try {
+                const response = await fetch("/api/signup", {
+                    method: "POST",
+                    body: formData
+                });
+    
+                if (response.ok) {
+                    // Redirect to signin page upon successful signup
+                    window.location.href = "signin.html";
+                } else {
+                    console.error("Failed to sign up user");
+                }
+            } catch (error) {
+                console.error("Error signing up user:", error);
+            }
+        });
+    </script>    
+</body>
+</html>
